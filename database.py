@@ -31,3 +31,18 @@ def save_account(name, phone, address, welcome_kit):
         """, (name, phone, address, welcome_kit, account_number))
         conn.commit()
     return account_number
+
+def create_user(user_id, name, phone):
+    with sqlite3.connect(DB_NAME) as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+            INSERT OR IGNORE INTO accounts (id, name, phone)
+            VALUES (?, ?, ?)
+        """, (user_id, name, phone))
+        conn.commit()
+
+def user_exists(user_id):
+    with sqlite3.connect(DB_NAME) as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT id FROM accounts WHERE id = ?", (user_id,))
+        return cursor.fetchone() is not None
